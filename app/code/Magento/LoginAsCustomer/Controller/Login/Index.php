@@ -1,11 +1,9 @@
 <?php
 /**
- * Copyright © Magefan (support@magefan.com). All rights reserved.
- * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
- *
- * Glory to Ukraine! Glory to the heroes!
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
  */
-namespace Magefan\LoginAsCustomer\Controller\Login;
+namespace Magento\LoginAsCustomer\Controller\Login;
 
 /**
  * LoginAsCustomer login action
@@ -13,21 +11,21 @@ namespace Magefan\LoginAsCustomer\Controller\Login;
 class Index extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var \Magefan\LoginAsCustomer\Model\Login
+     * @var \Magento\LoginAsCustomer\Model\Login
      */
     protected $loginModel = null;
 
     /**
      * Index constructor.
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magefan\LoginAsCustomer\Model\Login|null $loginModel
+     * @param \Magento\LoginAsCustomer\Model\Login|null $loginModel
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magefan\LoginAsCustomer\Model\Login $loginModel = null
+        \Magento\LoginAsCustomer\Model\Login $loginModel = null
     ) {
         parent::__construct($context);
-        $this->loginModel = $loginModel ?: $this->_objectManager->get(\Magefan\LoginAsCustomer\Model\Login::class);
+        $this->loginModel = $loginModel ?: $this->_objectManager->get(\Magento\LoginAsCustomer\Model\Login::class);
     }
     /**
      * Login as customer action
@@ -57,7 +55,7 @@ class Index extends \Magento\Framework\App\Action\Action
 
     /**
      * Init login info
-     * @return false || \Magefan\LoginAsCustomer\Model\Login
+     * @return false || \Magento\LoginAsCustomer\Model\Login
      */
     protected function _initLogin()
     {
