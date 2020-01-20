@@ -13,6 +13,11 @@ namespace Magento\LoginAsCustomer\Controller\Adminhtml\Login;
 class Login extends \Magento\Backend\App\Action
 {
     /**
+     * Authorization level of a basic admin session
+     */
+    const ADMIN_RESOURCE = 'Magento_LoginAsCustomer::login_button';
+
+    /**
      * @var \Magento\LoginAsCustomer\Model\Login
      */
     protected $loginModel;
@@ -128,15 +133,5 @@ class Login extends \Magento\Backend\App\Action
     public function getCustomerStoreId(\Magento\Customer\Model\Customer $customer)
     {
         return $customer->getData('store_id');
-    }
-
-    /**
-     * Check is allowed access
-     *
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Magento_LoginAsCustomer::login_button');
     }
 }
