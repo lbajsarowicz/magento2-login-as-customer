@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\LoginAsCustomer\Controller\Adminhtml\Login;
 
@@ -128,10 +129,10 @@ class Login extends \Magento\Backend\App\Action
     /**
      * We're not using the $customer->getStoreId() method due to a bug where it returns the store for the customer's website
      * @param $customer
-     * @return string
+     * @return int
      */
-    public function getCustomerStoreId(\Magento\Customer\Model\Customer $customer)
+    public function getCustomerStoreId(\Magento\Customer\Model\Customer $customer): int
     {
-        return $customer->getData('store_id');
+        return (int)$customer->getData('store_id');
     }
 }
