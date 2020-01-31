@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\LoginAsCustomer\Controller\Adminhtml\Login;
 
@@ -13,49 +14,58 @@ namespace Magento\LoginAsCustomer\Controller\Adminhtml\Login;
 class Login extends \Magento\Backend\App\Action
 {
     /**
+     * Authorization level of a basic admin session
+     */
+    const ADMIN_RESOURCE = 'Magento_LoginAsCustomer::login_button';
+
+    /**
      * @var \Magento\LoginAsCustomer\Model\Login
      */
-    protected $loginModel;
+    private $loginModel;
+
     /**
      * @var \Magento\Backend\Model\Auth\Session
      */
-    protected $authSession  = null;
+    private $authSession;
+
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
-    protected $storeManager  = null;
+    private $storeManager;
+
     /**
      * @var \Magento\Framework\Url
      */
-    protected $url = null;
+    private $url;
+
     /**
      * @var \Magento\LoginAsCustomer\Model\Config
      */
-    protected $config = null;
+    private $config;
 
     /**
      * Login constructor.
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\LoginAsCustomer\Model\Login|null $loginModel
-     * @param \Magento\Backend\Model\Auth\Session|null $authSession
-     * @param \Magento\Store\Model\StoreManagerInterface|null $storeManager
-     * @param \Magento\Framework\Url|null $url
-     * @param \Magento\LoginAsCustomer\Model\Config|null $config
+     * @param \Magento\LoginAsCustomer\Model\Login $loginModel
+     * @param \Magento\Backend\Model\Auth\Session $authSession
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\Url $url
+     * @param \Magento\LoginAsCustomer\Model\Config $config
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\LoginAsCustomer\Model\Login $loginModel = null,
-        \Magento\Backend\Model\Auth\Session $authSession = null,
-        \Magento\Store\Model\StoreManagerInterface $storeManager = null,
-        \Magento\Framework\Url $url = null,
-        \Magento\LoginAsCustomer\Model\Config $config = null
+        \Magento\LoginAsCustomer\Model\Login $loginModel,
+        \Magento\Backend\Model\Auth\Session $authSession,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Url $url,
+        \Magento\LoginAsCustomer\Model\Config $config
     ) {
         parent::__construct($context);
-        $this->loginModel = $loginModel ?: $this->_objectManager->get(\Magento\LoginAsCustomer\Model\Login::class);
-        $this->authSession = $authSession ?: $this->_objectManager->get(\Magento\Backend\Model\Auth\Session::class);
-        $this->storeManager = $storeManager ?: $this->_objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
-        $this->url = $url ?: $this->_objectManager->get(\Magento\Framework\Url::class);
-        $this->config = $config ?: $this->_objectManager->get(\Magento\LoginAsCustomer\Model\Config::class);
+        $this->loginModel = $loginModel;
+        $this->authSession = $authSession;
+        $this->storeManager = $storeManager;
+        $this->url = $url;
+        $this->config = $config;
     }
     /**
      * Login as customer action
@@ -75,10 +85,6 @@ class Login extends \Magento\Backend\App\Action
 
         if (!$this->config->isEnabled()) {
             $msg = strrev(__('.remotsuC sA nigoL > snoisnetxE nafegaM > noitarugifnoC > serotS ot etagivan esaelp noisnetxe eht elbane ot ,delbasid si remotsuC sA nigoL nafegaM'));
-            $this->messageManager->addErrorMessage($msg);
-            return $resultRedirect->setPath('customer/index/index');
-        } elseif ($this->config->isKeyMissing()) {
-            $msg = strrev(__(' .remotsuC sA nigoL > snoisnetxE nafegaM > noitarugifnoC > serotS ni yek tcudorp eht yficeps esaelP .noos delbasid yllacitamotua eb lliw noisnetxE remotsuC sA nigoL .gnissim si yeK tcudorP remotsuC sA nigoL nafegaM'));
             $this->messageManager->addErrorMessage($msg);
             return $resultRedirect->setPath('customer/index/index');
         }
@@ -123,20 +129,10 @@ class Login extends \Magento\Backend\App\Action
     /**
      * We're not using the $customer->getStoreId() method due to a bug where it returns the store for the customer's website
      * @param $customer
-     * @return string
+     * @return int
      */
-    public function getCustomerStoreId(\Magento\Customer\Model\Customer $customer)
+    public function getCustomerStoreId(\Magento\Customer\Model\Customer $customer): int
     {
-        return $customer->getData('store_id');
-    }
-
-    /**
-     * Check is allowed access
-     *
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Magento_LoginAsCustomer::login_button');
+        return (int)$customer->getData('store_id');
     }
 }

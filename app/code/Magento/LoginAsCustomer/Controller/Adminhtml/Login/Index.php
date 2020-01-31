@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\LoginAsCustomer\Controller\Adminhtml\Login;
 
@@ -12,21 +13,26 @@ namespace Magento\LoginAsCustomer\Controller\Adminhtml\Login;
 class Index extends \Magento\Backend\App\Action
 {
     /**
+     * Authorization level of a basic admin session
+     */
+    const ADMIN_RESOURCE = 'Magento_LoginAsCustomer::login_log';
+
+    /**
      * @var \Magento\LoginAsCustomer\Model\Login
      */
-    protected $loginModel = null;
+    private $loginModel;
 
     /**
      * Index constructor.
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\LoginAsCustomer\Model\Login|null $login
+     * @param \Magento\LoginAsCustomer\Model\Login $loginModel
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\LoginAsCustomer\Model\Login $loginModel = null
+        \Magento\LoginAsCustomer\Model\Login $loginModel
     ) {
         parent::__construct($context);
-        $this->loginModel = $loginModel ?: $this->_objectManager->get(\Magento\LoginAsCustomer\Model\Login::class);
+        $this->loginModel = $loginModel;
     }
     /**
      * Login as customer log
@@ -48,15 +54,5 @@ class Index extends \Magento\Backend\App\Action
         $this->_view->getPage()->getConfig()->getTitle()->prepend($title);
         $this->_addBreadcrumb($title, $title);
         $this->_view->renderLayout();
-    }
-
-    /**
-     * Check is allowed access
-     *
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Magento_LoginAsCustomer::login_log');
     }
 }

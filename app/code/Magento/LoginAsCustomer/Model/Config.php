@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\LoginAsCustomer\Model;
 
@@ -18,18 +19,19 @@ class Config
     /**
      * Extension config path
      */
-    const XML_PATH_EXTENSION_ENABLED     = 'mfloginascustomer/general/enabled';
-    const XML_PATH_KEY                   = 'mfloginascustomer/general/key';
-    const STORE_VIEW_TO_LOGIN_IN         = 'mfloginascustomer/general/store_view_login';
+    private const XML_PATH_EXTENSION_ENABLED     = 'mfloginascustomer/general/enabled';
+    private const XML_PATH_KEY                   = 'mfloginascustomer/general/key';
+    private const STORE_VIEW_TO_LOGIN_IN         = 'mfloginascustomer/general/store_view_login';
 
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+
+    private $scopeConfig;
     /**
      * @var \Magento\Framework\App\ProductMetadataInterface
      */
-    protected $metadata;
+    private $metadata;
 
     /**
      * Config constructor.
@@ -60,31 +62,21 @@ class Config
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function isEnabled()
+    public function isEnabled():bool
     {
-        return $this->getConfig(
+        return (bool)$this->getConfig(
             self::XML_PATH_EXTENSION_ENABLED
         );
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function isKeyMissing()
+    public function getStoreViewLogin(): bool
     {
-        return !$this->getConfig(
-            self::XML_PATH_KEY
-        ) && $this->metadata->getEdition() != 'C' . strrev('ytinummo');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStoreViewLogin()
-    {
-        return $this->getConfig(
+        return (bool)$this->getConfig(
             self::STORE_VIEW_TO_LOGIN_IN
         );
     }
