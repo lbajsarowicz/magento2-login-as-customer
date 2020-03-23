@@ -44,6 +44,11 @@ class Login extends \Magento\Backend\App\Action
     private $config;
 
     /**
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     */
+    protected $customerRepository;
+
+    /**
      * Login constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\LoginAsCustomer\Model\Login $loginModel
@@ -58,7 +63,8 @@ class Login extends \Magento\Backend\App\Action
         \Magento\Backend\Model\Auth\Session $authSession,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Url $url,
-        \Magento\LoginAsCustomer\Model\Config $config
+        \Magento\LoginAsCustomer\Model\Config $config,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
     ) {
         parent::__construct($context);
         $this->loginModel = $loginModel;
@@ -66,6 +72,7 @@ class Login extends \Magento\Backend\App\Action
         $this->storeManager = $storeManager;
         $this->url = $url;
         $this->config = $config;
+        $this->customerRepository = $customerRepository;
     }
     /**
      * Login as customer action
@@ -107,6 +114,29 @@ class Login extends \Magento\Backend\App\Action
             return $resultRedirect->setPath('customer/index/index');
         }
 
+        /* Check if customer's company is active */
+        $tmpCustomer = $this->customerRepository->getById($customer->getId());
+        if ($tmpCustomer->getExtensionAttributes() !== null) {
+            $companyAttributes = null;
+            if (method_exists($tmpCustomer->getExtensionAttributes(), 'getCompanyAttributes')) {
+                $companyAttributes = $tmpCustomer->getExtensionAttributes()->getCompanyAttributes();
+            }
+
+            if ($companyAttributes !== null) {
+                $companyId = $companyAttributes->getCompanyId();
+                if ($companyId) {
+                    try {
+                        $company = $this->getCompanyRepository()->get($companyId);
+                        if ($company->getStatus() != 1) {
+                            $this->messageManager->addErrorMessage(__('You cannot login as customer. Customer\'s company is not active.'));
+                            return $resultRedirect->setPath('customer/index/index');
+                        }
+                    } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {}
+                }
+            }
+        }
+        /* End check */
+
         $user = $this->authSession->getUser();
         $login->generate($user->getId());
 
@@ -134,5 +164,14 @@ class Login extends \Magento\Backend\App\Action
     public function getCustomerStoreId(\Magento\Customer\Model\Customer $customer): int
     {
         return (int)$customer->getData('store_id');
+    }
+
+    /**
+     * Retrieve Company Repository
+     * @return \Magento\Company\Api\CompanyRepositoryInterface
+     */
+    protected function getCompanyRepository()
+    {
+        return $this->_objectManager->get(\Magento\Company\Api\CompanyRepositoryInterface::class);
     }
 }
