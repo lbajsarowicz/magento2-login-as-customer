@@ -20,7 +20,6 @@ class Config
      * Extension config path
      */
     private const XML_PATH_EXTENSION_ENABLED     = 'mfloginascustomer/general/enabled';
-    private const XML_PATH_KEY                   = 'mfloginascustomer/general/key';
     private const STORE_VIEW_TO_LOGIN_IN         = 'mfloginascustomer/general/store_view_login';
 
     /**
