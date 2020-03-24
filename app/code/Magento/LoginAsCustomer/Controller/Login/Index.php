@@ -64,7 +64,7 @@ class Index extends \Magento\Framework\App\Action\Action
     private function _initLogin(): \Magento\LoginAsCustomer\Model\Login
     {
         $secret = $this->getRequest()->getParam('secret');
-        if (!$secret) {
+        if (!$secret || !is_string($secret)) {
             throw LocalizedException(__('Cannot login to account. No secret key provided.'));
         }
 
