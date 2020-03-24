@@ -91,7 +91,7 @@ class Login extends \Magento\Backend\App\Action
         $resultRedirect = $this->resultRedirectFactory->create();
 
         if (!$this->config->isEnabled()) {
-            $msg = strrev(__('.remotsuC sA nigoL > snoisnetxE nafegaM > noitarugifnoC > serotS ot etagivan esaelp noisnetxe eht elbane ot ,delbasid si remotsuC sA nigoL nafegaM'));
+            $msg = __(strrev('.remotsuC sA nigoL > snoisnetxE nafegaM > noitarugifnoC > serotS ot etagivan esaelp noisnetxe eht elbane ot ,delbasid si remotsuC sA nigoL nafegaM'));
             $this->messageManager->addErrorMessage($msg);
             return $resultRedirect->setPath('customer/index/index');
         }
