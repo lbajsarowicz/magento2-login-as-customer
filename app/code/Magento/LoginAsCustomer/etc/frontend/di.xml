@@ -9,4 +9,8 @@
     <type name="Magento\PageCache\Model\Config">
         <plugin name="las-cache-is-enabled" type="Magento\LoginAsCustomer\Model\PageCache\ConfigPlugin"/>
     </type>
+    <type name="Magento\Framework\App\ActionInterface">
+        <plugin name="invalidate_expired_session_plugin"
+                type="Magento\LoginAsCustomer\Plugin\InvalidateExpiredSessionPlugin"/>
+    </type>
 </config>

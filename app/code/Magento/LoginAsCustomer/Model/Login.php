@@ -142,31 +142,6 @@ class Login extends \Magento\Framework\Model\AbstractModel
     }
 
     /**
-     * Delete not used credentials
-     * @return void
-     */
-    public function deleteNotUsed(): void
-    {
-        $resource = $this->getResource();
-        $resource->getConnection()->delete(
-            $resource->getTable('login_as_customer_log'),
-            [
-                'created_at < ?' => $this->getDateTimePoint(),
-                'used = ?' => 0,
-            ]
-        );
-    }
-
-    /**
-     * Retrieve login datetime point
-     * @return string
-     */
-    private function getDateTimePoint(): string
-    {
-        return date('Y-m-d H:i:s', $this->_dateTime->gmtTimestamp() - self::TIME_FRAME);
-    }
-
-    /**
      * Retrieve customer
      * @return \Magento\Customer\Model\Customer
      */
@@ -214,9 +189,10 @@ class Login extends \Magento\Framework\Model\AbstractModel
 
         if ($this->_customerSession->loginById($customer->getId())) {
             $this->_customerSession->regenerateId();
-            $this->_customerSession->setLoggedAsCustomerAdmindId(
+            $this->_customerSession->setLoggedAsCustomerAdminId(
                 $this->getAdminId()
             );
+            $this->_customerSession->setAdminUserSessionId($this->getAdminSessionId());
         } else {
             throw new \Exception(__("Cannot login customer."), 1);
         }
@@ -231,21 +207,5 @@ class Login extends \Magento\Framework\Model\AbstractModel
         $this->setUsed(1)->save();
 
         return $customer;
-    }
-
-    /**
-     * Generate new login credentials
-     * @param  int $adminId
-     * @return $this
-     */
-    public function generate($adminId): self
-    {
-        return $this->setData([
-            'customer_id' => $this->getCustomerId(),
-            'admin_id' => $adminId,
-            'secret' => $this->_random->getRandomString(64),
-            'used' => 0,
-            'created_at' => $this->_dateTime->gmtTimestamp(),
-        ])->save();
     }
 }

@@ -51,6 +51,12 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => true],
             'Admin ID'
         )->addColumn(
+            'admin_session_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            128,
+            ['nullable' => false],
+            'Admin Session ID'
+        )->addColumn(
             'secret',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             '64',
@@ -68,6 +74,12 @@ class InstallSchema implements InstallSchemaInterface
             null,
             [],
             'Creation Time'
+        )->addColumn(
+            'is_active',
+            \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+            null,
+            ['nullable' => false, 'default' => '1'],
+            'Active'
         )->addIndex(
             $installer->getIdxName('login_as_customer_log', ['customer_id']),
             ['customer_id']
