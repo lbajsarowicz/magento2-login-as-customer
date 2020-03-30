@@ -13,6 +13,7 @@
                     <resource id="Magento_LoginAsCustomer::login" title="Login As Customer" sortOrder="50">
                         <resource id="Magento_LoginAsCustomer::login_button" title="Login As Customer Button" sortOrder="10" />
                         <resource id="Magento_LoginAsCustomer::login_log" title="Login As Customer Log" sortOrder="20" />
+                        <resource id="Magento_LoginAsCustomer::login_token" title="Login As Customer Token" sortOrder="30" />
                     </resource>
                 </resource>
                 <resource id="Magento_Backend::stores">
